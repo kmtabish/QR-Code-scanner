@@ -31,7 +31,8 @@
       <div class="row">
         <div class="col-lg-6 col-sm-12">
           <div class="video-align">
-          <video id="preview" style="width: 100%; border-radius: 15px; margin-top: 10px"></video>
+            <video id="preview" style="width: 100%; border-radius: 15px; margin-top: 10px"></video>
+            <a class="btn btn-lg bg2" style="width: 100%; margin-top: 10%" href="#" role="button" id="startCamera" onclick="startCamera()">Scan Again</a>
           </div>
         </div>
         <hr>
@@ -40,7 +41,8 @@
             <div class="output-res">
               <div class="jumbotron">
                 <h1 class="display-5">QR Code Scaner</h1>
-                <p>Scan your QR code...</p>
+                <p id="scan-msg">Scan your QR code...</p>
+                <p id="scan-complete-msg">Scanning Complete.</p>
                 <hr class="my-4">
                 <h1 id='wait'><div class="spinner-grow text-dark" role="status">
                   <span class="sr-only">Loading...</span>
@@ -62,9 +64,37 @@
     </body>
     <script type="text/javascript">
       let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+      const startCamera = () =>{
+        $('#preview').show();
+        $('#startCamera').hide();
+        $('#scan-msg').show();
+        $('#scan-complete-msg').hide();
+        $('.jumbotron').addClass('bg1');
+        $('.jumbotron').removeClass('bg2');
+        $('.navbar').addClass('bg1');
+        $('.navbar').removeClass('bg2');
+        $('#wait').show();
+        $('#result').hide();
+        Instascan.Camera.getCameras().then(function (cameras) {
+          if (cameras.length > 0) {
+            if(!cameras[1]){
+              scanner.start(cameras[0]);
+            }else{
+              scanner.start(cameras[1]);
+            }
+          } else {
+            console.error('No cameras found.');
+          }
+        }).catch(function (e) {
+          console.error(e);
+        });
+      }
       $('#result').hide();
       $('.jumbotron').addClass('bg1');
       $('.navbar').addClass('bg1');
+      $('#startCamera').hide()
+      $('#scan-complete-msg').hide();
+      startCamera()
       scanner.addListener('scan', function (content) {
           $('#wait').hide();
           $('#result').show();
@@ -73,16 +103,17 @@
           $('.jumbotron').addClass('bg2');
           $('.navbar').removeClass('bg1');
           $('.navbar').addClass('bg2');
+          $('#startCamera').show();
+          $('#scan-msg').hide();
+          $('#scan-complete-msg').show();
+          scanner.stop().then(()=>{
+              console.log("Camera Stoppeed");
+              $('#preview').hide();
+
+          })
           console.log(content);
         });
-      Instascan.Camera.getCameras().then(function (cameras) {
-        if (cameras.length > 0) {
-          scanner.start(cameras[0]);
-        } else {
-          console.error('No cameras found.');
-        }
-      }).catch(function (e) {
-        console.error(e);
-      });
+
+
     </script>
 </html>
