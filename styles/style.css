@@ -1,0 +1,17 @@
+.video-align{
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+.bg1{
+  background-color: #FBAB7E;
+  background-image: linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%);
+
+}
+.bg2{
+  background-color: #85FFBD;
+  background-image: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%);
+}
+.output-res{
+  margin-top: 2%
+}
